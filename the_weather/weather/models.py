@@ -6,5 +6,7 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
+    def get_absolute_url(self):
+        return "/"
     class Meta:
         verbose_name_plural='cities'
