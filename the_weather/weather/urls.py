@@ -6,5 +6,5 @@ from .sitemaps import BlogPostSitemap
 urlpatterns = [
     path('',views.index,name='home'),
     path('delete/<city_name>/',views.delete_city,name='delete_city'),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', BlogPostSitemap, {'sitemaps': sitemap},name='django.contrib.sitemaps.views.sitemap'),
 ]
