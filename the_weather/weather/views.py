@@ -2,8 +2,12 @@ import requests
 from django.shortcuts import render,redirect
 from .models import City
 from .forms import CityForm
+from geopy.geocoders import Nominatim 
+from timezonefinder import TimezoneFinder
+from datetime import datetime
+import pytz
 
-# Create your views here.
+
 def index(request):
     url='http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=5427020bc367679787e66df76e0aa51f'
     err=''
@@ -37,11 +41,23 @@ def index(request):
     weather_data=[]
     for city in cities:
         r=requests.get(url.format(city)).json()
+        #print(r)
+
+        geolocator = Nominatim(user_agent="geoapiExercises") 
+        place = city.name
+        location = geolocator.geocode(place) 
+        obj = TimezoneFinder() 
+        result = obj.timezone_at(lng=location.longitude, lat=location.latitude) 
+        time=datetime.now(pytz.timezone(result))
+        fmt = '%Y-%m-%d | %H:%M:%S %Z'
+        time=time.strftime(fmt)
+
         city_weather={
                 'city':city.name,
                 'temperature':r['main']['temp'],
                 'description':r['weather'][0]['description'],
                 'icon':r['weather'][0]['icon'],
+                'time':time,
                 }
         weather_data.append(city_weather)
     context={'weather_data':weather_data,
